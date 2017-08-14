@@ -15,4 +15,6 @@ public interface Player {
     boolean isWin();
 
     boolean isLose();
+
+    boolean isMyTurn();
 }

@@ -45,6 +45,8 @@ public class LocalPlayerImpl implements Player {
             if(answer == 1){
                 this.lastState = State.FINISHED;
                 win = true;
+            }else {
+                this.lastState = State.SENT;
             }
             return answer;
         }else {
@@ -68,4 +70,8 @@ public class LocalPlayerImpl implements Player {
         return n + appropriateValue / 3;
     }
 
+    @Override
+    public boolean isMyTurn(){
+        return this.lastState == State.RECEIVED && !isLose() && !isWin();
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Mojtaba Safaeian
  *         Created at: 08/14/2017.
  */
-public class TwoPlayerGameImpl implements Game{
+public class TwoPlayerGameImpl implements Game {
 
     private List<HistoryRecord> answers;
     private Player myPlayer;
@@ -23,18 +23,33 @@ public class TwoPlayerGameImpl implements Game{
         this.answers = new ArrayList<>();
     }
 
-    public void startPlay(){
+    @Override
+    public void startPlay() {
         Integer firstAnswer = myPlayer.generateFirstAnswer();
         competitorPlayer.receiveAnswer(firstAnswer);
         this.answers.add(new HistoryRecord(firstAnswer, HistoryRecord.HistoryRecordType.SENT));
     }
 
-    public void receiveAnswer(Integer answer){
+    @Override
+    public void receiveAnswer(Integer answer) {
         this.answers.add(new HistoryRecord(answer, HistoryRecord.HistoryRecordType.RECEIVED));
         this.myPlayer.receiveAnswer(answer);
     }
 
-    public boolean isFinished(){
+    @Override
+    public void answer(){
+        int answer = this.myPlayer.answer();
+        this.answers.add(new HistoryRecord(answer, HistoryRecord.HistoryRecordType.SENT));
+        this.competitorPlayer.receiveAnswer(answer);
+    }
+
+    @Override
+    public boolean isMyTurn() {
+        return this.myPlayer.isMyTurn();
+    }
+
+    @Override
+    public boolean isFinished() {
         return this.myPlayer.isWin() || this.myPlayer.isLose();
     }
 }

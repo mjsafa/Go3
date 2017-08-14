@@ -6,4 +6,13 @@ package mojtaba.safaeian.go3.api.domain;
  */
 public interface Game {
 
+    void startPlay();
+
+    void receiveAnswer(Integer answer);
+
+    void answer();
+
+    boolean isMyTurn();
+
+    boolean isFinished();
 }

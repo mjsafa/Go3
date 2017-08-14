@@ -25,6 +25,7 @@
         <commons-io.version>2.5</commons-io.version>
         <httpclient.version>4.5.3</httpclient.version>
         <modelmapper.version>0.7.4</modelmapper.version>
+        <feign.version>9.3.1</feign.version>
     </properties>
 
 
@@ -47,6 +48,22 @@
                 <groupId>org.modelmapper</groupId>
                 <artifactId>modelmapper</artifactId>
                 <version>${modelmapper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-okhttp</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-gson</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-slf4j</artifactId>
+                <version>${feign.version}</version>
             </dependency>
 
         </dependencies>

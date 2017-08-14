@@ -1,7 +1,9 @@
 package mojtaba.safaeian.go3.controller;
 
 import mojtaba.safaeian.go3.api.domain.Game;
+import mojtaba.safaeian.go3.api.dto.Answer;
 import mojtaba.safaeian.go3.api.dto.GameDto;
+import mojtaba.safaeian.go3.api.dto.NewGameRequest;
 import mojtaba.safaeian.go3.api.dto.RemotePlayerDescriptor;
 import mojtaba.safaeian.go3.api.service.GameService;
 import org.modelmapper.ModelMapper;
@@ -17,7 +19,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "game", produces = "application/json")
+@RequestMapping(
+        value = "game",
+        produces = "application/json", consumes =
+        "application/json")
 public class GameController {
 
     private final GameService gameService;
@@ -32,11 +37,17 @@ public class GameController {
     @PostMapping
     @ResponseBody
     public ResponseEntity<GameDto> startNewGame(
-            @RequestBody RemotePlayerDescriptor remotePlayerDescriptor){
-        Game game = gameService.startNewGame(remotePlayerDescriptor);
+            @RequestBody NewGameRequest newGameRequest) {
+        Game game = gameService.startNewGame(new Answer(newGameRequest.getFirstNumber()),
+                newGameRequest.getRemotePlayerDescriptor());
 
         GameDto gameDto = modelMapper.map(game, GameDto.class);
         return ResponseEntity.ok(gameDto);
     }
 
+    @PostMapping("answers")
+    public ResponseEntity addAnswer(Answer answer) {
+        gameService.addAnswer(answer);
+        return null;
+    }
 }
