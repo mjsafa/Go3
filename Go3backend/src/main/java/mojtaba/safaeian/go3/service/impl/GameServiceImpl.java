@@ -3,7 +3,7 @@ package mojtaba.safaeian.go3.service.impl;
 import mojtaba.safaeian.go3.api.domain.Game;
 import mojtaba.safaeian.go3.api.domain.Player;
 import mojtaba.safaeian.go3.api.dto.Answer;
-import mojtaba.safaeian.go3.api.dto.GameDto;
+import mojtaba.safaeian.go3.api.dto.AnswerRequest;
 import mojtaba.safaeian.go3.api.dto.RemotePlayerDescriptor;
 import mojtaba.safaeian.go3.api.service.GameService;
 import mojtaba.safaeian.go3.domain.GameFactory;
@@ -11,6 +11,7 @@ import mojtaba.safaeian.go3.domain.LocalPlayerImpl;
 import mojtaba.safaeian.go3.domain.PlayerFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +21,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GameServiceImpl implements GameService{
+
+    @Value("go3.local.host")
+    private String localHost;
+
+    @Value("server.port")
+    private String localPort;
 
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
@@ -37,8 +44,10 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor){
+        RemotePlayerDescriptor localPlayer = new RemotePlayerDescriptor(localHost, localPort);
+
         Player myPlayer = new LocalPlayerImpl();
-        Player remotePlayer = playerFactory.createRemotePlayer(remotePlayerDescriptor);
+        Player remotePlayer = playerFactory.createRemotePlayer(remotePlayerDescriptor, localPlayer);
         Game game = gameFactory.createGame(myPlayer, remotePlayer);
         if(answer != null && answer.getNumber() > 0){
             game.receiveAnswer(answer.getNumber());
@@ -51,7 +60,7 @@ public class GameServiceImpl implements GameService{
     }
 
     @Override
-    public void addAnswer(Answer answer){
-        this.runningGame.receiveAnswer(answer.getNumber());
+    public void addAnswer(AnswerRequest answerRequest){
+        this.runningGame.receiveAnswer(answerRequest.getNumber());
     }
 }

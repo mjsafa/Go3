@@ -1,0 +1,4 @@
+server.port: 8091
+go3:
+  local:
+    host: localhost

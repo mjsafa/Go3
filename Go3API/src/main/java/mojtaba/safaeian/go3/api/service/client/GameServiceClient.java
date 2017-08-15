@@ -2,6 +2,8 @@ package mojtaba.safaeian.go3.api.service.client;
 
 import feign.Headers;
 import feign.RequestLine;
+import mojtaba.safaeian.go3.api.dto.Answer;
+import mojtaba.safaeian.go3.api.dto.AnswerRequest;
 import mojtaba.safaeian.go3.api.dto.GameDto;
 import mojtaba.safaeian.go3.api.dto.NewGameRequest;
 
@@ -16,5 +18,10 @@ public interface GameServiceClient {
     @RequestLine("POST /game")
     @Headers("Content-Type: application/json")
     GameDto startNewGame(NewGameRequest newGameRequest);
+
+    @RequestLine("POST /game/answers")
+    @Headers("Content-Type: application/json")
+    void answer(AnswerRequest answerRequest);
+
 
 }

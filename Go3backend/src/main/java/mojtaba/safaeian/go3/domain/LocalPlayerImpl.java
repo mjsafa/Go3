@@ -67,7 +67,7 @@ public class LocalPlayerImpl implements Player {
     private int generateAnswer(int n) {
         int appropriateValue =  n % 3 == 0 ? 0 :
                 (n % 3 == 1 ? -1 : 1);
-        return n + appropriateValue / 3;
+        return (n + appropriateValue) / 3;
     }
 
     @Override

@@ -2,9 +2,9 @@ package mojtaba.safaeian.go3.controller;
 
 import mojtaba.safaeian.go3.api.domain.Game;
 import mojtaba.safaeian.go3.api.dto.Answer;
+import mojtaba.safaeian.go3.api.dto.AnswerRequest;
 import mojtaba.safaeian.go3.api.dto.GameDto;
 import mojtaba.safaeian.go3.api.dto.NewGameRequest;
-import mojtaba.safaeian.go3.api.dto.RemotePlayerDescriptor;
 import mojtaba.safaeian.go3.api.service.GameService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,8 @@ public class GameController {
     }
 
     @PostMapping("answers")
-    public ResponseEntity addAnswer(Answer answer) {
-        gameService.addAnswer(answer);
-        return null;
+    public ResponseEntity addAnswer(AnswerRequest answerRequest) {
+        gameService.addAnswer(answerRequest);
+        return ResponseEntity.ok("OK");
     }
 }

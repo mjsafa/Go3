@@ -2,6 +2,7 @@ package mojtaba.safaeian.go3.api.service;
 
 import mojtaba.safaeian.go3.api.domain.Game;
 import mojtaba.safaeian.go3.api.dto.Answer;
+import mojtaba.safaeian.go3.api.dto.AnswerRequest;
 import mojtaba.safaeian.go3.api.dto.RemotePlayerDescriptor;
 
 /**
@@ -12,5 +13,5 @@ public interface GameService {
 
     Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor);
 
-    void addAnswer(Answer answer);
+    void addAnswer(AnswerRequest answerRequest);
 }
