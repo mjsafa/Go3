@@ -21,7 +21,7 @@ public interface GameServiceClient {
 
     @RequestLine("POST /game/answers")
     @Headers("Content-Type: application/json")
-    void answer(AnswerRequest answerRequest);
+    String answer(AnswerRequest answerRequest);
 
 
 }

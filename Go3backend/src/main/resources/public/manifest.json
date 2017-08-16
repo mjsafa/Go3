@@ -1,0 +1,7 @@
+{
+  "name": "Go3",
+  "short_name": "Go3",
+  "description": "A simple user interface for Go3 application",
+  "start_url": "/",
+  "display": "standalone"
+}

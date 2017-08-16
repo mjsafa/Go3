@@ -2,12 +2,14 @@ package mojtaba.safaeian.go3.domain;
 
 import feign.Feign;
 import feign.Logger;
+import feign.RetryableException;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
 import mojtaba.safaeian.go3.api.domain.Player;
 import mojtaba.safaeian.go3.api.dto.*;
+import mojtaba.safaeian.go3.api.service.RemoteServiceException;
 import mojtaba.safaeian.go3.api.service.client.GameServiceClient;
 
 /**
@@ -27,7 +29,7 @@ public class RemotePlayerImpl implements Player {
                 .decoder(new GsonDecoder())
                 .logger(new Slf4jLogger(GameServiceClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(GameServiceClient.class, remotePlayerDescriptor.getHttpUrl() + "/game");
+                .target(GameServiceClient.class, remotePlayerDescriptor.getHttpUrl());
         this.localPlayer = localPlayer;
     }
 
@@ -38,11 +40,15 @@ public class RemotePlayerImpl implements Player {
 
     @Override
     public void receiveAnswer(Integer answer) {
-        if(isStarted){
-            gameServiceClient.answer(new AnswerRequest(answer, localPlayer));
-        }else {
-            gameServiceClient.startNewGame(new NewGameRequest(answer, localPlayer));
-            this.isStarted = true;
+        try {
+            if (isStarted) {
+                gameServiceClient.answer(new AnswerRequest(answer, localPlayer));
+            } else {
+                gameServiceClient.startNewGame(new NewGameRequest(answer, localPlayer));
+                this.isStarted = true;
+            }
+        } catch (RetryableException re) {
+            throw new RemoteServiceException(re);
         }
     }
 

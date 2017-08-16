@@ -17,4 +17,20 @@ public class HistoryRecord {
         this.number = number;
         this.historyRecordType = historyRecordType;
     }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setHistoryRecordType(HistoryRecordType historyRecordType) {
+        this.historyRecordType = historyRecordType;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public HistoryRecordType getHistoryRecordType() {
+        return historyRecordType;
+    }
 }

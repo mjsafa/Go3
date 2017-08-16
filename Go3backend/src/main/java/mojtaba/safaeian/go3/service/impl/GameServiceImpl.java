@@ -1,6 +1,7 @@
 package mojtaba.safaeian.go3.service.impl;
 
 import mojtaba.safaeian.go3.api.domain.Game;
+import mojtaba.safaeian.go3.api.domain.GameRunnerStatus;
 import mojtaba.safaeian.go3.api.domain.Player;
 import mojtaba.safaeian.go3.api.dto.Answer;
 import mojtaba.safaeian.go3.api.dto.AnswerRequest;
@@ -48,19 +49,29 @@ public class GameServiceImpl implements GameService{
 
         Player myPlayer = new LocalPlayerImpl();
         Player remotePlayer = playerFactory.createRemotePlayer(remotePlayerDescriptor, localPlayer);
-        Game game = gameFactory.createGame(myPlayer, remotePlayer);
+        this.runningGame = gameFactory.createGame(myPlayer, remotePlayer);
         if(answer != null && answer.getNumber() > 0){
-            game.receiveAnswer(answer.getNumber());
+            this.runningGame.receiveAnswer(answer.getNumber());
         }
 
         //Start running game
-        this.gameRunner = new GameRunner(game);
+        this.gameRunner = new GameRunner(this.runningGame);
         new Thread(gameRunner).start();
-        return game;
+        return this.runningGame;
     }
 
     @Override
     public void addAnswer(AnswerRequest answerRequest){
         this.runningGame.receiveAnswer(answerRequest.getNumber());
+    }
+
+    @Override
+    public GameRunnerStatus getStatus(){
+        return this.gameRunner.getStatus();
+    }
+
+    @Override
+    public Game getRunningGame(){
+        return this.runningGame;
     }
 }

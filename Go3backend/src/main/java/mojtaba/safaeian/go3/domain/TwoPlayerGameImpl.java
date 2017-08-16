@@ -16,11 +16,12 @@ public class TwoPlayerGameImpl implements Game {
     private List<HistoryRecord> answers;
     private Player myPlayer;
     private Player competitorPlayer;
+    private boolean isStarted = false;
 
     public TwoPlayerGameImpl(Player myPlayer, Player competitorPlayer) {
         this.myPlayer = myPlayer;
         this.competitorPlayer = competitorPlayer;
-        this.answers = new ArrayList<>();
+        this.answers = new ArrayList<HistoryRecord>();
     }
 
     @Override
@@ -28,6 +29,7 @@ public class TwoPlayerGameImpl implements Game {
         Integer firstAnswer = myPlayer.generateFirstAnswer();
         competitorPlayer.receiveAnswer(firstAnswer);
         this.answers.add(new HistoryRecord(firstAnswer, HistoryRecord.HistoryRecordType.SENT));
+        this.isStarted = true;
     }
 
     @Override
@@ -51,5 +53,15 @@ public class TwoPlayerGameImpl implements Game {
     @Override
     public boolean isFinished() {
         return this.myPlayer.isWin() || this.myPlayer.isLose();
+    }
+
+    @Override
+    public List<HistoryRecord> getHistories() {
+        return answers;
+    }
+
+    @Override
+    public boolean isStarted(){
+        return this.isStarted;
     }
 }

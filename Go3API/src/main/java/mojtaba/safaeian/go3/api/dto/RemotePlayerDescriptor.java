@@ -1,5 +1,6 @@
 package mojtaba.safaeian.go3.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -11,7 +12,7 @@ public class RemotePlayerDescriptor {
     private String host;
     private String port;
 
-    public RemotePlayerDescriptor(String host, String port) {
+    public RemotePlayerDescriptor(@JsonProperty("host") String host, @JsonProperty("port") String port) {
         this.host = host;
         this.port = port;
     }

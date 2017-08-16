@@ -41,13 +41,27 @@ public class GameController {
         Game game = gameService.startNewGame(new Answer(newGameRequest.getFirstNumber()),
                 newGameRequest.getRemotePlayerDescriptor());
 
-        GameDto gameDto = modelMapper.map(game, GameDto.class);
-        return ResponseEntity.ok(gameDto);
+        return ResponseEntity.ok(gameToGameDto(game));
     }
 
     @PostMapping("answers")
     public ResponseEntity addAnswer(AnswerRequest answerRequest) {
         gameService.addAnswer(answerRequest);
         return ResponseEntity.ok("OK");
+    }
+
+    @GetMapping
+    public @ResponseBody GameDto getGameDto(){
+        return gameToGameDto(gameService.getRunningGame());
+    }
+
+
+    /**
+     * converts a game domain object to a DTO to send over http
+     * @param game
+     * @return
+     */
+    private GameDto gameToGameDto(Game game){
+        return modelMapper.map(game, GameDto.class);
     }
 }
