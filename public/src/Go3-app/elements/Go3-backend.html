@@ -17,8 +17,6 @@
                   on-message="_newMessage">
     </stomp-client>
 
-    <h2>BACKEND</h2>
-    <paper-button on-tap="_startGame">TEST_SEND</paper-button>
   </template>
 
   <script>
@@ -69,7 +67,13 @@
         },
 
         remotePlayer: {
-            type: Object,
+          type: Object,
+          notify: true,
+          value: {}
+        },
+
+        automaticAnswer: {
+            type: Boolean
         }
 
       },
@@ -106,7 +110,12 @@
       },
 
       startNewGame: function () {
-        this.$.stomp.sendStomp('/app/game/start', {remotePlayerDescriptor: this.remotePlayer});
+        this.$.stomp.sendStomp('/app/game/start', {remotePlayerDescriptor: this.remotePlayer, automatic: this.automaticAnswer});
+      },
+
+
+      requestAnswer: function () {
+        this.$.stomp.sendStomp('/app/game/requestAnswer', {});
       },
 
       _newMessage: function (event) {
@@ -118,10 +127,13 @@
             this._onStatusChanged(message);
             break;
           case '/topic/game/answers/received':
-            this._onAnswerReceived(answer);
+            this._onAnswerReceived(message);
             break;
           case '/topic/game/answers/sent':
-            this._onAnsweredSent(message);
+            this._onAnswerSent(message);
+            break;
+          case '/topic/start':
+            this.fire('game-started', message);
             break;
         }
 
@@ -132,6 +144,8 @@
         this.push('receivedAnswers', {
           value: answer
         });
+
+        this.fire('answer-received', {value: answer, type: 'received'});
       },
 
       _onAnswerSent: function (answer) {
@@ -139,6 +153,7 @@
         this.push('sentAnswers', {
           value: answer
         });
+        this.fire('answer-sent', {value: answer, type: 'sent'});
       },
 
       _onStatusChanged: function (status) {

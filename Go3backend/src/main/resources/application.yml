@@ -1,4 +1,4 @@
-server.port: 8343
+#server.port: 8343
 go3:
   local:
     host: localhost

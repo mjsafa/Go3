@@ -10,10 +10,14 @@ public class NewGameRequest {
 
     private int firstNumber;
     private RemotePlayerDescriptor remotePlayerDescriptor;
+    private boolean automatic;
 
-    public NewGameRequest(@JsonProperty("firstNumber") int firstNumber, @JsonProperty("remotePlayerDescriptor") RemotePlayerDescriptor remotePlayerDescriptor) {
+    public NewGameRequest(@JsonProperty("firstNumber") int firstNumber,
+                          @JsonProperty("remotePlayerDescriptor") RemotePlayerDescriptor remotePlayerDescriptor,
+                          @JsonProperty("automatic") boolean automatic) {
         this.firstNumber = firstNumber;
         this.remotePlayerDescriptor = remotePlayerDescriptor;
+        this.automatic = automatic;
     }
 
     public int getFirstNumber() {
@@ -22,5 +26,9 @@ public class NewGameRequest {
 
     public RemotePlayerDescriptor getRemotePlayerDescriptor() {
         return remotePlayerDescriptor;
+    }
+
+    public boolean isAutomatic() {
+        return automatic;
     }
 }

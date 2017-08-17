@@ -12,11 +12,13 @@ import mojtaba.safaeian.go3.api.dto.RemotePlayerDescriptor;
  */
 public interface GameService {
 
-    Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor);
+    Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor, boolean automatic);
 
     void addAnswer(AnswerRequest answerRequest);
 
     GameRunnerStatus getStatus();
 
     Game getRunningGame();
+
+    void requestAnswerByUser();
 }

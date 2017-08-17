@@ -16,7 +16,7 @@ public class PlayerFactory {
         return new LocalPlayerImpl();
     }
 
-    public Player createRemotePlayer(RemotePlayerDescriptor descriptor, RemotePlayerDescriptor localPlayer) {
-        return new RemotePlayerImpl(descriptor, localPlayer);
+    public Player createRemotePlayer(RemotePlayerDescriptor descriptor, RemotePlayerDescriptor localPlayer, boolean isStarted) {
+        return new RemotePlayerImpl(descriptor, localPlayer, isStarted);
     }
 }

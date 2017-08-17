@@ -22,7 +22,7 @@ public class RemotePlayerImpl implements Player {
     private GameServiceClient gameServiceClient;
     private boolean isStarted = false;
 
-    public RemotePlayerImpl(RemotePlayerDescriptor remotePlayerDescriptor, RemotePlayerDescriptor localPlayer) {
+    public RemotePlayerImpl(RemotePlayerDescriptor remotePlayerDescriptor, RemotePlayerDescriptor localPlayer , boolean isStarted) {
         gameServiceClient = Feign.builder()
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder())
@@ -31,6 +31,7 @@ public class RemotePlayerImpl implements Player {
                 .logLevel(Logger.Level.FULL)
                 .target(GameServiceClient.class, remotePlayerDescriptor.getHttpUrl());
         this.localPlayer = localPlayer;
+        this.isStarted = isStarted;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class RemotePlayerImpl implements Player {
             if (isStarted) {
                 gameServiceClient.answer(new AnswerRequest(answer, localPlayer));
             } else {
-                gameServiceClient.startNewGame(new NewGameRequest(answer, localPlayer));
+                gameServiceClient.startNewGame(new NewGameRequest(answer, localPlayer, true));
                 this.isStarted = true;
             }
         } catch (RetryableException re) {

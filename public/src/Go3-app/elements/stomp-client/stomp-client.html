@@ -116,6 +116,7 @@
             }.bind(this));
           }.bind(this), function (message) {
             this.connected = false;
+            this.autoConnect();
             console.log('connection failed!');
           }.bind(this));
         }

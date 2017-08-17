@@ -1,0 +1,122 @@
+<style>
+  .item {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #aaaaaa;
+    margin-bottom: 30px;
+    margin-top: 20px;
+  }
+
+  .item.received {
+    left: 350px;
+    margin-top: 0px;
+    position: absolute;
+  }
+</style>
+<dom-module id="Go3-result">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+
+    </style>
+
+
+    <!--<div class="item1" style="margin: 100px;background-color: red; width: 100px; height:  100px"></div>
+
+    <div class="item2" style="margin: 100px;background-color: red; width: 100px; height:  100px"></div>-->
+
+    <div id="container"></div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'Go3-result',
+
+      properties: {},
+
+
+      attached: function () {
+        /*jsPlumb.ready(function () {
+         jsPlumb.makeSource(this.$$('.item1'), {
+         connector: 'StateMachine'
+         });
+         jsPlumb.makeTarget(this.$$('.item2'), {
+         anchor: 'Continuous'
+         });
+         }.bind(this));*/
+      },
+
+      _resultChanged: function () {
+        this.instance = jsPlumb.getInstance({
+          Endpoint: ["Dot", {radius: 2}],
+          Connector: "StateMachine",
+          HoverPaintStyle: {stroke: "#1e8151", strokeWidth: 2},
+          ConnectionOverlays: [
+            ["Arrow", {
+              location: 1,
+              id: "arrow",
+              length: 14,
+              foldback: 0.8
+            }],
+            ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
+          ],
+          Container: "canvas"
+        });
+        this.instance.registerConnectionType("basic", {anchor: "Continuous", connector: "StateMachine"});
+
+      },
+
+
+      addItem: function (item) {
+        var el = document.createElement('div');
+        el.className = 'item ' + item.type;
+        el.innerHTML = item.value;
+
+        this.$.container.appendChild(el);
+
+        if (this.lastItem) {
+          jsPlumb.makeSource(this.lastEl, {
+            connector: 'StateMachine'
+          });
+          jsPlumb.makeTarget(this.lastEl, {
+            anchor: 'Continuous'
+          });
+
+          this.connections = this.connections || [];
+          this.connections.push(jsPlumb.connect({
+            source: this.lastEl,
+            target: el,
+          }));
+        }
+        this.lastItem = item;
+        this.lastEl = el;
+      },
+
+      clear: function () {
+        var el = this.$.container;
+
+        if (this.connections) {
+          this.connections.forEach(function (connection) {
+            jsPlumb.deleteConnection(connection);
+          });
+
+          this.connections = [];
+        }
+
+        while (el.hasChildNodes()) {
+          el.removeChild(el.lastChild);
+        }
+        this.lastEl = null;
+        this.el = null;
+        this.lastItem = null;
+      }
+
+
+    });
+  </script>
+</dom-module>

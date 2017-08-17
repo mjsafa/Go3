@@ -40,13 +40,13 @@ public class GameController {
     public ResponseEntity<GameDto> startNewGame(
             @RequestBody NewGameRequest newGameRequest) {
         Game game = gameService.startNewGame(new Answer(newGameRequest.getFirstNumber()),
-                newGameRequest.getRemotePlayerDescriptor());
+                newGameRequest.getRemotePlayerDescriptor(), true);
 
         return ResponseEntity.ok(gameToGameDto(game));
     }
 
     @PostMapping("answers")
-    public ResponseEntity addAnswer(AnswerRequest answerRequest) {
+    public ResponseEntity addAnswer(@RequestBody AnswerRequest answerRequest) {
         gameService.addAnswer(answerRequest);
         return ResponseEntity.ok("OK");
     }

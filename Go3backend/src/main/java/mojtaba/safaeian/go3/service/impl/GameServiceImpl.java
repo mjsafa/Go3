@@ -24,10 +24,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class GameServiceImpl implements GameService{
 
-    @Value("go3.local.host")
+    @Value("${go3.local.host}")
     private String localHost;
 
-    @Value("server.port")
+    @Value("${server.port}")
     private String localPort;
 
     private final GameFactory gameFactory;
@@ -48,18 +48,18 @@ public class GameServiceImpl implements GameService{
     }
 
     @Override
-    public Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor){
+    public Game startNewGame(Answer answer, RemotePlayerDescriptor remotePlayerDescriptor, boolean automatic){
         RemotePlayerDescriptor localPlayer = new RemotePlayerDescriptor(localHost, localPort);
 
         Player myPlayer = new LocalPlayerImpl();
-        Player remotePlayer = playerFactory.createRemotePlayer(remotePlayerDescriptor, localPlayer);
+        Player remotePlayer = playerFactory.createRemotePlayer(remotePlayerDescriptor, localPlayer, answer != null && answer.getNumber() > 0);
         this.runningGame = gameFactory.createGame(myPlayer, remotePlayer);
         if(answer != null && answer.getNumber() > 0){
             this.runningGame.receiveAnswer(answer.getNumber());
         }
 
         //Start running game
-        this.gameRunner = new GameRunner(this.runningGame, template);
+        this.gameRunner = new GameRunner(this.runningGame, template, automatic);
         new Thread(gameRunner).start();
         return this.runningGame;
     }
@@ -77,5 +77,10 @@ public class GameServiceImpl implements GameService{
     @Override
     public Game getRunningGame(){
         return this.runningGame;
+    }
+
+    @Override
+    public void requestAnswerByUser(){
+        this.gameRunner.requestAnswerByUser();
     }
 }

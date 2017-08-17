@@ -57,7 +57,7 @@ public class TestGameServiceClient {
 
     @Test
     public void testStartNewGame() throws InterruptedException {
-        GameDto gameDto = gameServiceClient.startNewGame(new NewGameRequest(13, new RemotePlayerDescriptor("", "")));
+        GameDto gameDto = gameServiceClient.startNewGame(new NewGameRequest(13, new RemotePlayerDescriptor("", ""), true));
 
         assertThat(gameDto.getHistories().get(0), hasProperty("number", is(equalTo(13))));
         assertThat(gameDto.getHistories().get(0),

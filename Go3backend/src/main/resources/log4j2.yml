@@ -12,7 +12,7 @@ Configutation:
         pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
     File:
       name: File_Appender
-      fileName: ${log-path}/studio.log
+      fileName: ${log-path}/go3.log
       PatternLayout:
         pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
   Loggers:
@@ -21,7 +21,7 @@ Configutation:
         AppenderRef:
           - ref: Console_Appender
       Logger:
-        - name: com.iranrayaneh
+        - name: mojtaba.safaeian
           level: debug
           AppenderRef:
             - ref: File_Appender

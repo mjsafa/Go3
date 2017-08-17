@@ -6,6 +6,8 @@ import mojtaba.safaeian.go3.api.dto.GameDto;
 import mojtaba.safaeian.go3.api.dto.NewGameRequest;
 import mojtaba.safaeian.go3.api.service.GameService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class WebSocketGameController {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketGameController.class);
 
     private final SimpMessagingTemplate template;
     private final GameService gameService;
@@ -34,11 +37,18 @@ public class WebSocketGameController {
 
     @MessageMapping("/game/start")
     @SendTo("/topic/start")
-    public GameDto greeting(NewGameRequest newGameRequest) throws Exception {
-        System.out.println("GAME START ++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    public GameDto startNewGame(NewGameRequest newGameRequest) throws Exception {
+        logger.debug("new websocket request for starting a new game with remote player at {}", newGameRequest.getRemotePlayerDescriptor().getHttpUrl());
         Game game = gameService.startNewGame(new Answer(newGameRequest.getFirstNumber()),
-                newGameRequest.getRemotePlayerDescriptor());
+                newGameRequest.getRemotePlayerDescriptor(), newGameRequest.isAutomatic());
         return gameToGameDto(game);
+    }
+
+    @MessageMapping("/game/requestAnswer")
+    @SendTo("/topic/requestAnswer")
+    public String requestAnswer() throws Exception {
+        gameService.requestAnswerByUser();
+        return "ok";
     }
 
     private GameDto gameToGameDto(Game game){

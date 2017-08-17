@@ -38,6 +38,7 @@ public class TwoPlayerGameImpl implements Game {
         this.answers.add(new HistoryRecord(answer, HistoryRecord.HistoryRecordType.RECEIVED));
         this.myPlayer.receiveAnswer(answer);
         this.lastAnswer = answer;
+        this.isStarted = true;
     }
 
     @Override

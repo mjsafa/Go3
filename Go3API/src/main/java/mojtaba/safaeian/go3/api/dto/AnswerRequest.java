@@ -8,18 +8,18 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  */
 public class AnswerRequest {
 
-    private int number;
+    private Integer number;
     private RemotePlayerDescriptor remotePlayerDescriptor;
 
     public AnswerRequest() {
     }
 
-    public AnswerRequest(int number, RemotePlayerDescriptor remotePlayerDescriptor) {
+    public AnswerRequest(Integer number, RemotePlayerDescriptor remotePlayerDescriptor) {
         this.number = number;
         this.remotePlayerDescriptor = remotePlayerDescriptor;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
@@ -27,7 +27,7 @@ public class AnswerRequest {
         this.remotePlayerDescriptor = remotePlayerDescriptor;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 

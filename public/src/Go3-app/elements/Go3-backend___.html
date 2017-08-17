@@ -1,0 +1,75 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="stomp-client/stomp-client.html">
+
+<dom-module id="Go3-backend">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <iron-ajax id="ajax"
+               handle-as="json"
+               on-response="handleResponse"
+               debounce-duration="300"></iron-ajax>
+
+    <h2>BACKEND</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'Go3-backend',
+
+      properties: {
+        url: {
+          type: String,
+          value: '/game'
+        },
+
+        game: {
+          type: Object,
+          notify: true
+        },
+
+        status: {
+          type: String,
+          notify: true
+        }
+      },
+
+      startGame: function (remotePlayerDescriptor) {
+        var ajax = this.$.ajax;
+        ajax.method = 'POST';
+        ajax.body = {
+          remotePlayerDescriptor: remotePlayerDescriptor
+        };
+        return ajax.generateRequest().completes()
+          .then(function (response) {
+            this.game = response;
+          }.bind(this));
+      },
+
+      updateGame: function () {
+        var ajax = this.$.ajax;
+        ajax.method = 'GET';
+        return ajax.generateRequest().completes()
+          .then(function (response) {
+            this.game = response;
+          }.bind(this));
+      },
+
+      updateStatus: function () {
+        var ajax = this.$.ajax;
+        ajax.method = 'GET';
+        ajax.url = this.url + '/status';
+        return ajax.generateRequest().completes()
+          .then(function (response) {
+            this.status = response;
+          }.bind(this));
+      }
+
+    });
+  </script>
+</dom-module>
