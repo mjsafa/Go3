@@ -1,0 +1,1 @@
+java -jar Go3-backend-1.0-SNAPSHOT.war --server.port=8075
