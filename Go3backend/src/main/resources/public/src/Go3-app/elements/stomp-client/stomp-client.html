@@ -93,7 +93,7 @@
           if (!this.url || !this.topics)
             return;
 
-          this.socket = new SockJS(this.url + '/gameSock');
+          this.socket = new SockJS(this.url);
           this.socket.onclose = function () {
             this.connected = false;
           }.bind(this);
@@ -116,6 +116,7 @@
             }.bind(this));
           }.bind(this), function (message) {
             this.connected = false;
+            this.autoConnect();
             console.log('connection failed!');
           }.bind(this));
         }

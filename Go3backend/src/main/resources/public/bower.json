@@ -7,7 +7,8 @@
     "iron-elements": "^1.0.10",
     "paper-elements": "^1.0.7",
     "sockjs": "~0.3.4",
-    "stomp-websocket": "~2.3.4"
+    "stomp-websocket": "~2.3.4",
+    "jquery": "^3.2.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

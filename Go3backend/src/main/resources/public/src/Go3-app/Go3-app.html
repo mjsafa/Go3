@@ -22,6 +22,7 @@
 
 
 <!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
@@ -55,6 +56,7 @@
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 
 <link rel="import" href="elements/Go3-backend.html">
+<link rel="import" href="elements/Go3-result.html">
 
 <dom-module id="Go3-app">
   <template>
@@ -70,36 +72,86 @@
       paper-spinner {
         margin: 0 20px;
       }
+
+      .paper-dialog-0 > *:first-child {
+        margin-top: 0;
+      }
+
+      .btn{
+        background-color: #ddd;
+        color: #333;
+      }
     </style>
 
-    <go3-backend url="http://localhost:8085"
-                 connected="{{connected}}"></go3-backend>
+    <go3-backend id="go3"
+                 automatic-answer="[[automaticAnswer]]"
+                 url="/gameSock"
+                 connected="{{connected}}"
+                 status="{{status}}"
+                 remote-player="{{remotePlayer}}"
+                 on-game-started="_newGameStarted"
+                 on-answer-received="_newItem"
+                 on-answer-sent="_newItem"></go3-backend>
 
 
     <paper-toolbar class="flex horizontal layout">
-        <span class="title">
+      <div class="layout horizontal flex center" style="width: 100%">
+        <span class="title flex" style="width: 100%">
           <h3 hidden$="[[connected]]">connecting to the server</h3>
           <h3 hidden$="[[!connected]]">Ready to play</h3>
         </span>
 
-      <paper-spinner active="[[!connected]]"></paper-spinner>
-      <paper-icon-button hidden$="[[!connected]]"
-                         icon="thumb-up"
-                         on-tap="_openStartDialog"></paper-icon-button>
+        <paper-button raised class="btn" hidden$="[[!showStart(status, connected)]]"
+                           id="startGame"
+                           on-tap="_openStartDialog">
+
+          <iron-icon icon="flag"></iron-icon>
+          Start Game
+        </paper-button>
+
+
+        <paper-button class="btn" hidden$="[[!showRequestAnswer(automaticAnswer, status, connected)]]"
+                      id="sendNewAnswer"
+                      on-tap="_sendNewAnswer">
+          Send new Answer
+        </paper-button>
+
+        <paper-spinner active="[[!connected]]"></paper-spinner>
+
+        <paper-tooltip for="startGame">Start new game</paper-tooltip>
+      </div>
+
+      <div hidden$="[[!_isInStatus(status, 'RETRYABLE_REMOTE_ERROR')]]">
+        Problem sending request to other (remote) player, trying to contact it ...
+        <iron-icon icon="icons:warning"></iron-icon>
+      </div>
     </paper-toolbar>
 
-    <paper-card class="main-header">
-
-
-    </paper-card>
+    <div id="resultParent">
+      <Go3-result id="result"></Go3-result>
+    </div>
 
     <paper-dialog id="startDialog">
+      <paper-toolbar class="toolbar">
+        <span class="title">Start a new game with remote player </span>
+      </paper-toolbar>
+
       <paper-input label="host" value="{{remotePlayer.host}}"></paper-input>
       <paper-input label="port" value="{{remotePlayer.port}}"></paper-input>
 
-      <paper-button on-tap="_startGame">Start!</paper-button>
+
+      <div class="horizontal layout">
+        <span>Automatic answering: </span>
+        <paper-toggle-button checked="{{automaticAnswer}}"></paper-toggle-button>
+      </div>
+
+
+      <div class="buttons">
+        <paper-button on-tap="_startGame">Start!</paper-button>
+      </div>
     </paper-dialog>
 
+    <paper-toast id="toast"></paper-toast>
   </template>
 
   <script>
@@ -108,14 +160,15 @@
       is: 'Go3-app',
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'Go3-app'
-        },
 
         remotePlayer: {
           type: Object,
-          value: {}
+          value: {host: 'localhost', port: 8075}
+        },
+
+        status: {
+          type: String,
+          value: 'NOTHING'
         }
       },
 
@@ -124,7 +177,40 @@
       },
 
       _startGame: function () {
+        this.$.result.clear();
+       /* this.$.resultParent.removeChild(this.$.resultParent.lastChild);
+
+        var result = document.createElement('go3-result');
+        result.id = 'result';
+        this.$.resultParent.appendChild(result);
+*/
         this.$.go3.startNewGame();
+      },
+
+      _newGameStarted: function () {
+        this.$.startDialog.close();
+        this.$.toast.text = 'New game successfully started';
+        this.$.toast.show();
+      },
+
+      _isInStatus: function (currentStatus, status) {
+        return this.status === status;
+      },
+
+      showStart: function () {
+        return this.status !== 'STARTED' && this.status !== 'RETRYABLE_REMOTE_ERROR' && this.connected;
+      },
+
+      showRequestAnswer:function () {
+        return (!this.automaticAnswer) && this.connected && this.status === 'STARTED';
+      },
+
+      _newItem: function (event) {
+        this.$.result.addItem(event.detail);
+      },
+
+      _sendNewAnswer: function () {
+        this.$.go3.requestAnswer();
       }
 
     });
