@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 /**
  * @author  Mojtaba Safaeian
@@ -31,4 +32,5 @@ public class GO3Application extends SpringBootServletInitializer {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
 }

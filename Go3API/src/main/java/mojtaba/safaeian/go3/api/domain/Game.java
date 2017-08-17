@@ -21,4 +21,6 @@ public interface Game {
     List<HistoryRecord> getHistories();
 
     boolean isStarted();
+
+    int getLastReceivedAnswer();
 }

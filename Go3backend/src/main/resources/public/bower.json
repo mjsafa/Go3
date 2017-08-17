@@ -5,7 +5,9 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.9.0",
     "iron-elements": "^1.0.10",
-    "paper-elements": "^1.0.7"
+    "paper-elements": "^1.0.7",
+    "sockjs": "~0.3.4",
+    "stomp-websocket": "~2.3.4"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

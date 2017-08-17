@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="elements/Go3-backend.html">
 
 <dom-module id="Go3-app">
   <template>
@@ -7,7 +8,10 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    <h1>Connected: [[connected]]</h1>
+    <go3-backend url="http://localhost:8343"
+                 connected="[[connected]]"></go3-backend>
+    <paper-spinner></paper-spinner>
   </template>
 
   <script>

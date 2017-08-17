@@ -1,0 +1,125 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="stomp-client">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+  <script src="../../../../bower_components/sockjs/sockjs.min.js"></script>
+  <script src="../../../../bower_components/stomp-websocket/lib/stomp.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'stomp-client',
+        socket: null,
+        properties: {
+          protocol: {
+            type: String,
+            notify: true
+          },
+
+          url: {
+            type: String,
+            notify: true
+          },
+
+          topics: {
+            type: Array,
+            value: [],
+            notify: true
+          },
+
+          retryInterval: {
+            type: Number,
+            value: 1000
+          },
+
+          auto: {
+            type: Boolean,
+            value: false
+          },
+
+          connected: {
+            type: Boolean,
+            value: false,
+            notify: true
+          }
+        },
+
+        ready: function () {
+          this.autoConnect();
+        },
+
+        _handleEvent: function (topic, event) {
+          this.fire('message', {topic: topic, message: event.detail});
+        },
+        send: function (message) {
+          if (this.socket)
+            this.socket.send(message);
+        },
+
+        sendStomp: function (topic, message) {
+          this.stompClient.send(topic, {}, JSON.stringify(message));
+        },
+
+        close: function () {
+          if (this.socket)
+            this.socket.close();
+        },
+
+        autoConnect: function () {
+          if (this.auto) {
+            if (this.retryAsync) {
+              this.cancelAsync(this.retryAsync);
+            }
+            if (!this.connected) {
+              this.retryAsync = this.async(function () {
+                this.connect();
+              }.bind(this), this.retryInterval);
+            }
+          }
+        },
+
+        connect: function () {
+          console.log('connecting to server ...');
+          if (this.socket)
+            this.close();
+
+          if (!this.url || !this.topics)
+            return;
+
+          this.socket = new SockJS(this.url + '/gameSock');
+          this.socket.onclose = function () {
+            this.connected = false;
+          }.bind(this);
+
+
+          this.stompClient = Stomp.over(this.socket);
+
+          var element = this;
+          this.stompClient.connect({}, function () {
+            if (this.retryAsync) {
+              this.cancelAsync(this.retryAsync);
+            }
+
+            this.connected = true;
+            this.topics.forEach(function (topic) {
+              this.stompClient.subscribe(topic, function (message) {
+                var parsedMessage = JSON.parse(message.body);
+                this._handleEvent(topic, parsedMessage);
+              }.bind(this));
+            }.bind(this));
+          }.bind(this), function (message) {
+            this.connected = false;
+            console.log('connection failed!');
+          }.bind(this));
+        }
+      })
+    })();
+  </script>
+</dom-module>

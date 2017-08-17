@@ -1,6 +1,7 @@
 package mojtaba.safaeian.go3.controller;
 
 import mojtaba.safaeian.go3.api.domain.Game;
+import mojtaba.safaeian.go3.api.domain.GameRunnerStatus;
 import mojtaba.safaeian.go3.api.dto.Answer;
 import mojtaba.safaeian.go3.api.dto.AnswerRequest;
 import mojtaba.safaeian.go3.api.dto.GameDto;
@@ -55,6 +56,10 @@ public class GameController {
         return gameToGameDto(gameService.getRunningGame());
     }
 
+    @GetMapping("status")
+    public @ResponseBody GameRunnerStatus getStatus(){
+        return gameService.getStatus();
+    }
 
     /**
      * converts a game domain object to a DTO to send over http

@@ -1,5 +1,5 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="stomp-client/stomp-client.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
 <dom-module id="Go3-backend">
   <template>
@@ -9,15 +9,12 @@
       }
     </style>
 
-    <stomp-client id="stomp"
-                  url="[[url]]"
-                  topics="[[topics]]"
-                  connected="[[connected]]"
-                  auto>
-    </stomp-client>
+    <iron-ajax id="ajax"
+               handle-as="json"
+               on-response="handleResponse"
+               debounce-duration="300"></iron-ajax>
 
     <h2>BACKEND</h2>
-    <paper-button on-tap="_startGame">TEST_SEND</paper-button>
   </template>
 
   <script>
@@ -27,7 +24,8 @@
 
       properties: {
         url: {
-          type: String
+          type: String,
+          value: '/game'
         },
 
         game: {
@@ -38,16 +36,6 @@
         status: {
           type: String,
           notify: true
-        },
-
-        connected: {
-          type: Boolean,
-          value: false
-        },
-
-        topics: {
-          type: Array,
-          value: ['/topic/start']
         }
       },
 
@@ -80,12 +68,7 @@
           .then(function (response) {
             this.status = response;
           }.bind(this));
-      },
-
-      _startGame: function () {
-        this.$.stomp.sendStomp('/app/game/start',{firstNumber: 1} );
       }
-
 
     });
   </script>

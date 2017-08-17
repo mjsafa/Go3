@@ -13,6 +13,7 @@ import mojtaba.safaeian.go3.domain.PlayerFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,15 +33,18 @@ public class GameServiceImpl implements GameService{
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
     private final ModelMapper modelMapper;
+    @Autowired
+    private final SimpMessagingTemplate template;
 
     private Game runningGame = null;
     private GameRunner gameRunner;
 
     @Autowired
-    public GameServiceImpl(GameFactory gameFactory, PlayerFactory playerFactory, ModelMapper modelMapper) {
+    public GameServiceImpl(GameFactory gameFactory, PlayerFactory playerFactory, ModelMapper modelMapper, SimpMessagingTemplate template) {
         this.gameFactory = gameFactory;
         this.playerFactory = playerFactory;
         this.modelMapper = modelMapper;
+        this.template = template;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class GameServiceImpl implements GameService{
         }
 
         //Start running game
-        this.gameRunner = new GameRunner(this.runningGame);
+        this.gameRunner = new GameRunner(this.runningGame, template);
         new Thread(gameRunner).start();
         return this.runningGame;
     }

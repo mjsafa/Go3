@@ -17,6 +17,7 @@ public class TwoPlayerGameImpl implements Game {
     private Player myPlayer;
     private Player competitorPlayer;
     private boolean isStarted = false;
+    private int lastAnswer = 0;
 
     public TwoPlayerGameImpl(Player myPlayer, Player competitorPlayer) {
         this.myPlayer = myPlayer;
@@ -36,6 +37,7 @@ public class TwoPlayerGameImpl implements Game {
     public void receiveAnswer(Integer answer) {
         this.answers.add(new HistoryRecord(answer, HistoryRecord.HistoryRecordType.RECEIVED));
         this.myPlayer.receiveAnswer(answer);
+        this.lastAnswer = answer;
     }
 
     @Override
@@ -63,5 +65,10 @@ public class TwoPlayerGameImpl implements Game {
     @Override
     public boolean isStarted(){
         return this.isStarted;
+    }
+
+    @Override
+    public int getLastReceivedAnswer(){
+        return this.lastAnswer;
     }
 }
